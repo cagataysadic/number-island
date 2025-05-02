@@ -1,8 +1,9 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+// next.config.js
+const nextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_API_BASE_URL: 'http://localhost:3000/api', // örnek
+  },
 };
 
 export default nextConfig;
