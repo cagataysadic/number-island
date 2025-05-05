@@ -1,4 +1,3 @@
-// ✅ Yeni: services/api.ts (Next.js uyumlu)
 import { Score } from '../types/interface';
 
 export const fetchScores = async () => {

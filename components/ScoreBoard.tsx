@@ -1,9 +1,6 @@
 import React from 'react';
-import { Score } from '../types/interface';
+import { ScoreBoardProps } from '../types/interface';
 
-interface ScoreBoardProps {
-  scores: Score[];
-}
 
 const ScoreBoard: React.FC<ScoreBoardProps> = ({ scores }) => {
   return (

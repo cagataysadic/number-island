@@ -2,11 +2,21 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setUsername, submitUsername } from '../redux/gameSlice';
+import { ScoreBoardProps } from '@/types/interface';
 
-const UsernameModal: React.FC = () => {
+const UsernameModal: React.FC<ScoreBoardProps> = ({ scores }) => {
   const username = useSelector((state: RootState) => state.game.username);
   const isUsernameSubmitted = useSelector((state: RootState) => state.game.isUsernameSubmitted);
   const dispatch = useDispatch();
+  const names = [...scores.map(item => item.username)]
+  const handleUsernameSubmit = ()  => {
+    if (names.indexOf(username) >= 0) {
+      alert("Username already exists")
+      dispatch(submitUsername(false))
+    } else {
+      dispatch(submitUsername(true))
+    }
+  }
 
   return (
     !isUsernameSubmitted && (
@@ -18,7 +28,7 @@ const UsernameModal: React.FC = () => {
         zIndex: 1000
       }}>
         <form
-          onSubmit={() => dispatch(submitUsername(true))}
+          onSubmit={() => handleUsernameSubmit()}
           style={{
             backgroundColor: 'white',
             padding: '30px',

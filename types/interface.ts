@@ -30,4 +30,9 @@ export type GameState = {
   isTimerActive: boolean;
   isUsernameSubmitted: boolean;
   guesses: { [key: number]: 'right' | 'wrong' };
+  rightGuesses: number[];
 };
+
+export interface ScoreBoardProps {
+  scores: Score[];
+}

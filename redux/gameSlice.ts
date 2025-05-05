@@ -10,6 +10,7 @@ const initialState: GameState = {
   isTimerActive: false,
   isUsernameSubmitted: false,
   guesses: {},
+  rightGuesses: [],
 };
 
 const gameSlice = createSlice({
@@ -31,6 +32,10 @@ const gameSlice = createSlice({
     setGuessResult(state, action: PayloadAction<{ index: number; result: 'right' | 'wrong' }>) {
       const { index, result } = action.payload;
       state.guesses[index] = result;
+    },
+    setRightGuesses(state, action: PayloadAction<{ num: number }>) {
+      const { num } = action.payload;
+      state.rightGuesses.push(num);
     },
     resetGame(state) {
       state.totalGuess = 0;
@@ -58,6 +63,7 @@ export const {
   incrementGuess,
   incrementCorrect,
   setGuessResult,
+  setRightGuesses,
   resetGame,
   setCooldown,
   decrementCooldown,

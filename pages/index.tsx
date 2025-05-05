@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import UsernameModal from '../components/UsernameModal';
 import GameStats from '../components/GameStats';
 import GameGrid from '../components/GameGrid';
@@ -8,7 +9,7 @@ import { fetchScores, postScore } from '../services/api';
 import { Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { decrementCooldown, incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { decrementCooldown, incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -17,6 +18,7 @@ function Home() {
   const totalGuess = useSelector((state: RootState) => state.game.totalGuess);
   const guessRight = useSelector((state: RootState) => state.game.guessRight);
   const guesses = useSelector((state: RootState) => state.game.guesses);
+  const rightGuesses = useSelector((state: RootState) => state.game.rightGuesses);
   const cooldown = useSelector((state: RootState) => state.game.cooldown);
   const timer = useSelector((state: RootState) => state.game.timer);
   const isTimerActive = useSelector((state: RootState) => state.game.isTimerActive);
@@ -24,6 +26,7 @@ function Home() {
 
   const [numbers, setNumbers] = useState<number[]>([]);
   const [allLocalMax, setAllLocalMax] = useState<number[]>([]);
+  const [allMaxNum, setAllMaxNum] = useState<number[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
 
@@ -94,12 +97,15 @@ function Home() {
     }
     setNumbers(tempNumbers);
     const tempLocalMax: number[] = [];
+    const tempMaxNum: number[] = [];
     for (let i = 0; i < 36; i++) {
       if (localMax(tempNumbers[i], i, tempNumbers)) {
         tempLocalMax.push(i);
+        tempMaxNum.push(tempNumbers[i])
       }
     }
     setAllLocalMax(tempLocalMax);
+    setAllMaxNum(tempMaxNum);
   }, [localMax]);
 
   useEffect(() => {
@@ -113,15 +119,22 @@ function Home() {
   }, [isUsernameSubmitted, refresh]);
 
   const handleClick = (num: number, index: number) => {
-    dispatch(incrementGuess());
-    const isMax = localMax(num, index, numbers);
-    if (isMax) {
-      dispatch(setGuessResult({ index, result: 'right' }));
-      dispatch(incrementCorrect());
-    } else {
-      dispatch(setGuessResult({ index, result: 'wrong' }));
+    if (!guesses[index]) {
+      dispatch(incrementGuess());
+      const isMax = localMax(num, index, numbers);
+      if (isMax) {
+        dispatch(setGuessResult({ index, result: 'right' }));
+        dispatch(setRightGuesses({ num }));
+        dispatch(incrementCorrect());
+      } else {
+        dispatch(setGuessResult({ index, result: 'wrong' }));
+      }
     }
   };
+
+  if (rightGuesses.length > 0 && allMaxNum.length > 0 && rightGuesses.length === allMaxNum.length) {
+    toast.success("Well done. You have found every local max number");
+  }
 
   const handleAllLocalMaxClick = () => {
     if (!clicked) {
@@ -143,7 +156,8 @@ function Home() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <UsernameModal />
+      <ToastContainer />
+      <UsernameModal scores={scores}/>
       {isUsernameSubmitted && (
         <GameStats
           totalGuess={totalGuess}

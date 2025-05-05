@@ -1,8 +1,7 @@
-// next.config.js
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   env: {
-    NEXT_PUBLIC_API_BASE_URL: 'http://localhost:3000/api', // örnek
+    NEXT_PUBLIC_API_BASE_URL: 'http://localhost:3000/api',
   },
 };
 
