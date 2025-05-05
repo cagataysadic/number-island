@@ -132,9 +132,11 @@ function Home() {
     }
   };
 
-  if (rightGuesses.length > 0 && allMaxNum.length > 0 && rightGuesses.length === allMaxNum.length) {
-    toast.success("Well done. You have found every local max number");
-  }
+  useEffect(() => {
+    if (rightGuesses.length > 0 && allMaxNum.length > 0 && rightGuesses.length === allMaxNum.length) {
+      toast.success("Well done. You have found every local max number");
+    }
+  }, [guessRight])
 
   const handleAllLocalMaxClick = () => {
     if (!clicked) {
