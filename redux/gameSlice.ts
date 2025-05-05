@@ -37,6 +37,9 @@ const gameSlice = createSlice({
       const { num } = action.payload;
       state.rightGuesses.push(num);
     },
+    setRightGuessesReset(state) {
+      state.rightGuesses = [];
+    },
     resetGame(state) {
       state.totalGuess = 0;
       state.guessRight = 0;
@@ -64,6 +67,7 @@ export const {
   incrementCorrect,
   setGuessResult,
   setRightGuesses,
+  setRightGuessesReset,
   resetGame,
   setCooldown,
   decrementCooldown,

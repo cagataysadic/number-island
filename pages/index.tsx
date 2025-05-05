@@ -9,7 +9,7 @@ import { fetchScores, postScore } from '../services/api';
 import { Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { decrementCooldown, incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { decrementCooldown, incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -143,6 +143,7 @@ function Home() {
       allLocalMax.forEach((index) => {
         dispatch(setGuessResult({ index, result: 'right' }));
       });
+      dispatch(setRightGuessesReset());
       setClicked(true);
     } else {
       dispatch(resetGame());
