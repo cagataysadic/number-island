@@ -48,9 +48,6 @@ const gameSlice = createSlice({
     setCooldown(state, action: PayloadAction<number>) {
       state.cooldown = action.payload;
     },
-    decrementCooldown(state) {
-      state.cooldown--;
-    },
     setTimer(state, action: PayloadAction<string>) {
       state.timer = action.payload;
     },
@@ -70,7 +67,6 @@ export const {
   setRightGuessesReset,
   resetGame,
   setCooldown,
-  decrementCooldown,
   setTimer,
   toggleTimerActive,
 } = gameSlice.actions;

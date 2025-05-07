@@ -3,7 +3,7 @@ import { GameStatsProps } from '../types/interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
-const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldownClick }) => {
+const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldownClick, buttonDisabled }) => {
   const totalGuess = useSelector((state: RootState) => state.game.totalGuess);
   const guessRight = useSelector((state: RootState) => state.game.guessRight);
 
@@ -15,7 +15,7 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
           <button type="submit">Skoru Kaydet</button>
         </form>
       </div>
-      <button onClick={handleCooldownClick}>Timer</button>
+      <button onClick={handleCooldownClick} disabled={buttonDisabled}>Timer</button>
       <h2>Total Guess: {totalGuess}</h2>
       <h2>Accuracy: %{guessRight > 0 ? ((guessRight / totalGuess) * 100).toFixed(2) : 0}</h2>
     </div>

@@ -9,6 +9,7 @@ export interface Score {
 export interface GameStatsProps {
   totalGuess: number;
   guessRight: number;
+  buttonDisabled: boolean;
   handleSubmitScore: (e: React.FormEvent) => void;
   handleCooldownClick: () => void;
 }

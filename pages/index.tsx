@@ -9,7 +9,7 @@ import { fetchScores, postScore } from '../services/api';
 import { Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { decrementCooldown, incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -29,6 +29,7 @@ function Home() {
   const [allMaxNum, setAllMaxNum] = useState<number[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
   const { localMax } = useLocalMax();
 
@@ -66,27 +67,23 @@ function Home() {
   useEffect(() => {
     let clock: NodeJS.Timeout;
     if (cooldown > 0) {
-      clock = setInterval(() => {
-        dispatch(decrementCooldown());
-      }, 1000);
+      clock = setTimeout(() => {
+        handleSubmitScore();
+        dispatch(setCooldown(0));
+        dispatch(toggleTimerActive(false));
+        dispatch(setTimer('Hayır'));
+        setButtonDisabled(false);
+      }, 3000);
     }
-    if (cooldown === 0 && isTimerActive) {
-      dispatch(setTimer('Evet'));
-      dispatch(toggleTimerActive(false));
-    }
-    return () => clearInterval(clock);
+    return () => clearTimeout(clock);
   }, [cooldown, isTimerActive]);
-
-  useEffect(() => {
-    if (timer === 'Evet') {
-      handleSubmitScore();
-    }
-  }, [timer]);
 
   const handleCooldownClick = () => {
     if (cooldown === 0) {
       dispatch(setCooldown(30));
+      dispatch(setTimer('Evet'));
       dispatch(toggleTimerActive(true));
+      setButtonDisabled(true);
     }
   };
 
@@ -165,6 +162,7 @@ function Home() {
         <GameStats
           totalGuess={totalGuess}
           guessRight={guessRight}
+          buttonDisabled={buttonDisabled}
           handleSubmitScore={handleSubmitScore}
           handleCooldownClick={handleCooldownClick}
         />
