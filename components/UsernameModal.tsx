@@ -46,6 +46,7 @@ const UsernameModal: React.FC<ScoreBoardProps> = ({ scores }) => {
             onChange={(e) => dispatch(setUsername(e.target.value))}
             placeholder="Username"
             style={{ padding: '10px', fontSize: '16px' }}
+            required
           />
           <button
             type="submit"
