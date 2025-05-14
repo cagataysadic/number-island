@@ -22,8 +22,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           'INSERT INTO scores (username, total_guess, guess_right, accuracy, timer, created_at) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
           [username.trim(), total_guess, guess_right, accuracy, timer]
         );
-    
-        console.log('Saved successfuly:', result.rows[0]);
         res.status(201).json(result.rows[0]);
       } catch (error) {
         console.error('DB error:', error);

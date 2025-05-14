@@ -37,3 +37,7 @@ export type GameState = {
 export interface ScoreBoardProps {
   scores: Score[];
 }
+
+export type ColumnMeta = {
+  className?: string;
+};

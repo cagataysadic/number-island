@@ -30,7 +30,6 @@ function Home() {
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-
   const { localMax } = useLocalMax();
 
   const fetchAndSetScores = useCallback(async () => {
@@ -73,7 +72,7 @@ function Home() {
         dispatch(toggleTimerActive(false));
         dispatch(setTimer('Hayır'));
         setButtonDisabled(false);
-      }, 3000);
+      }, 30000);
     }
     return () => clearTimeout(clock);
   }, [cooldown, isTimerActive]);
@@ -155,7 +154,7 @@ function Home() {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div className='flex flex-col items-center mt-20 bg-white'>
       <ToastContainer />
       <UsernameModal scores={scores}/>
       {isUsernameSubmitted && (
@@ -176,7 +175,7 @@ function Home() {
           handleReset={handleReset}
         />
       )}
-      {isUsernameSubmitted && <ScoreBoard scores={scores} />}
+      <ScoreBoard scores={scores} />
     </div>
   );
 }

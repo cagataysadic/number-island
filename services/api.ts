@@ -1,17 +1,22 @@
+import axios from 'axios';
 import { Score } from '../types/interface';
 
 export const fetchScores = async () => {
-  const res = await fetch('/api/scores');
-  if (!res.ok) throw new Error('Skorlar çekilemedi');
-  return res.json();
+  try {
+    const res = await axios.get('/api/scores');
+    return res.data;
+  } catch (error) {
+    console.log("Skorlar çekilemedi");
+    throw error;
+  }
 };
 
 export const postScore = async (score: Score) => {
-  const res = await fetch('/api/scores', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(score),
-  });
-  if (!res.ok) throw new Error('Skor kaydedilemedi');
-  return res.json();
+  try {
+    const res = await axios.post('/api/scores', score);
+    return res.data;
+  } catch (error) {
+    console.log("Skor kaydedilemedi");
+    throw error;
+  }
 };
