@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useCallback, useState, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import UsernameModal from '../components/UsernameModal';
 import GameStats from '../components/GameStats';
@@ -32,6 +32,17 @@ function Home() {
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const { localMax } = useLocalMax();
 
+  const totalGuessRef = useRef(totalGuess);
+  const guessRightRef = useRef(guessRight);
+
+  useEffect(() => {
+    totalGuessRef.current = totalGuess;
+  }, [totalGuess]);
+
+  useEffect(() => {
+    guessRightRef.current = guessRight;
+  }, [guessRight]);
+
   const fetchAndSetScores = useCallback(async () => {
     try {
       const data = await fetchScores();
@@ -43,24 +54,25 @@ function Home() {
 
   const handleSubmitScore = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
+
     try {
       await postScore({
         username,
-        total_guess: totalGuess,
-        guess_right: guessRight,
-        accuracy: parseFloat(((guessRight / totalGuess) * 100).toFixed(2)) || 0,
+        total_guess: totalGuessRef.current,
+        guess_right: guessRightRef.current,
+        accuracy: parseFloat(((guessRightRef.current / totalGuessRef.current) * 100).toFixed(2)) || 0,
         timer,
       });
-      dispatch(resetGame());
-      dispatch(toggleTimerActive(false));
-      dispatch(setUsername(''));
-      dispatch(submitUsername(false));
-      setClicked(false);
-      refresh();
-      fetchAndSetScores();
     } catch (error) {
       console.error('Skor kaydedilirken hata oluştu:', error);
     }
+    dispatch(resetGame());
+    dispatch(toggleTimerActive(false));
+    dispatch(setUsername(''));
+    dispatch(submitUsername(false));
+    setClicked(false);
+    refresh();
+    fetchAndSetScores();
   };
 
   useEffect(() => {
