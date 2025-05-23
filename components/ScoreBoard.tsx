@@ -31,6 +31,11 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ scores }) => {
       accessorKey: 'timer',
       meta: { className: "w-20"}
     },
+    {
+      header: 'Zorluk',
+      accessorKey: 'difficulty',
+      meta: { className: "w-20"}
+    },
   ];
 
   const table = useReactTable({

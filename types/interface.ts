@@ -4,12 +4,12 @@ export interface Score {
     guess_right: number;
     accuracy: number;
     timer: string;
+    difficulty: string;
 }
 
 export interface GameStatsProps {
   totalGuess: number;
   guessRight: number;
-  buttonDisabled: boolean;
   handleSubmitScore: (e: React.FormEvent) => void;
   handleCooldownClick: () => void;
 }
@@ -32,6 +32,9 @@ export type GameState = {
   isUsernameSubmitted: boolean;
   guesses: { [key: number]: 'right' | 'wrong' };
   rightGuesses: number[];
+  difficulty: string;
+  timerButtonDisabled: boolean;
+  difficultyButton: string;
 };
 
 export interface ScoreBoardProps {

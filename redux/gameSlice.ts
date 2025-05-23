@@ -11,6 +11,9 @@ const initialState: GameState = {
   isUsernameSubmitted: false,
   guesses: {},
   rightGuesses: [],
+  difficulty: 'easy',
+  timerButtonDisabled: false,
+  difficultyButton: 'easy',
 };
 
 const gameSlice = createSlice({
@@ -54,6 +57,13 @@ const gameSlice = createSlice({
     toggleTimerActive(state, action: PayloadAction<boolean>) {
       state.isTimerActive = action.payload;
     },
+    setGameDifficulty(state, action: PayloadAction<string>) {
+      state.difficulty = action.payload;
+      state.difficultyButton = action.payload;
+    },
+    setTimerButtonDisabled(state, action: PayloadAction<boolean>) {
+      state.timerButtonDisabled = action.payload;
+    }
   },
 });
 
@@ -69,6 +79,8 @@ export const {
   setCooldown,
   setTimer,
   toggleTimerActive,
+  setGameDifficulty,
+  setTimerButtonDisabled,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

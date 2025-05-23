@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { setUsername, submitUsername } from '../redux/gameSlice';
-import { Score, ScoreBoardProps } from '@/types/interface';
+import { ScoreBoardProps } from '@/types/interface';
 
 const UsernameModal: React.FC<ScoreBoardProps> = ({ scores }) => {
   const username = useSelector((state: RootState) => state.game.username);

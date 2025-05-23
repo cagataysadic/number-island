@@ -9,7 +9,7 @@ import { fetchScores, postScore } from '../services/api';
 import { Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGameDifficulty, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -22,6 +22,7 @@ function Home() {
   const cooldown = useSelector((state: RootState) => state.game.cooldown);
   const timer = useSelector((state: RootState) => state.game.timer);
   const isTimerActive = useSelector((state: RootState) => state.game.isTimerActive);
+  const gameDifficulty = useSelector((state: RootState) => state.game.difficulty);
   const dispatch = useDispatch();
 
   const [numbers, setNumbers] = useState<number[]>([]);
@@ -29,7 +30,6 @@ function Home() {
   const [allMaxNum, setAllMaxNum] = useState<number[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
-  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const { localMax } = useLocalMax();
 
   const totalGuessRef = useRef(totalGuess);
@@ -62,6 +62,7 @@ function Home() {
         guess_right: guessRightRef.current,
         accuracy: parseFloat(((guessRightRef.current / totalGuessRef.current) * 100).toFixed(2)) || 0,
         timer,
+        difficulty: gameDifficulty,
       });
     } catch (error) {
       console.error('Skor kaydedilirken hata oluştu:', error);
@@ -70,6 +71,7 @@ function Home() {
     dispatch(toggleTimerActive(false));
     dispatch(setUsername(''));
     dispatch(submitUsername(false));
+    dispatch(setGameDifficulty('easy'));
     setClicked(false);
     refresh();
     fetchAndSetScores();
@@ -83,7 +85,7 @@ function Home() {
         dispatch(setCooldown(0));
         dispatch(toggleTimerActive(false));
         dispatch(setTimer('Hayır'));
-        setButtonDisabled(false);
+        dispatch(setTimerButtonDisabled(false));
       }, 30000);
     }
     return () => clearTimeout(clock);
@@ -94,7 +96,7 @@ function Home() {
       dispatch(setCooldown(30));
       dispatch(setTimer('Evet'));
       dispatch(toggleTimerActive(true));
-      setButtonDisabled(true);
+      dispatch(setTimerButtonDisabled(true));
     }
   };
 
@@ -107,7 +109,7 @@ function Home() {
     const tempLocalMax: number[] = [];
     const tempMaxNum: number[] = [];
     for (let i = 0; i < 36; i++) {
-      if (localMax(tempNumbers[i], i, tempNumbers)) {
+      if (localMax(tempNumbers[i], i, tempNumbers, gameDifficulty)) {
         tempLocalMax.push(i);
         tempMaxNum.push(tempNumbers[i])
       }
@@ -129,7 +131,7 @@ function Home() {
   const handleClick = (num: number, index: number) => {
     if (!guesses[index]) {
       dispatch(incrementGuess());
-      const isMax = localMax(num, index, numbers);
+      const isMax = localMax(num, index, numbers, gameDifficulty);
       if (isMax) {
         dispatch(setGuessResult({ index, result: 'right' }));
         dispatch(setRightGuesses({ num }));
@@ -165,6 +167,10 @@ function Home() {
     refresh();
   };
 
+  useEffect(() => {
+    handleReset();
+  }, [gameDifficulty])
+
   return (
     <div className='flex flex-col items-center mt-20 bg-white'>
       <ToastContainer />
@@ -173,7 +179,6 @@ function Home() {
         <GameStats
           totalGuess={totalGuess}
           guessRight={guessRight}
-          buttonDisabled={buttonDisabled}
           handleSubmitScore={handleSubmitScore}
           handleCooldownClick={handleCooldownClick}
         />
