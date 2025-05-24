@@ -173,15 +173,12 @@ function Home() {
       let delay;
       if (i === 0) {
         delay = 0
-        console.log(delay)
       } else {
         delay = clicks[i].timestamp - clicks[i - 1].timestamp
-        console.log(delay)
       }
 
       totalDelay += delay;
       setTimeout(() => {
-        console.log(delay)
         handleClick(clicks[i].num, clicks[i].index)
       }, totalDelay)
     }
