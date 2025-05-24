@@ -6,10 +6,10 @@ import GameGrid from '../components/GameGrid';
 import ScoreBoard from '../components/ScoreBoard';
 import useLocalMax from '../hooks/useLocalMax';
 import { fetchScores, postScore } from '../services/api';
-import { Score } from '../types/interface';
+import { ClickEvent, Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGameDifficulty, setGuessResult, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGameDifficulty, setGuessResult, setReplayButtonDisabled, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -23,6 +23,7 @@ function Home() {
   const timer = useSelector((state: RootState) => state.game.timer);
   const isTimerActive = useSelector((state: RootState) => state.game.isTimerActive);
   const gameDifficulty = useSelector((state: RootState) => state.game.difficulty);
+  const replayButtonDisabled = useSelector((state: RootState) => state.game.replayButtonDisabled)
   const dispatch = useDispatch();
 
   const [numbers, setNumbers] = useState<number[]>([]);
@@ -30,10 +31,18 @@ function Home() {
   const [allMaxNum, setAllMaxNum] = useState<number[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
+  const [clicks, setClicks] = useState<ClickEvent[]>([])
+  const [startTime, setStartTime] = useState<number | null>(null);
+
   const { localMax } = useLocalMax();
 
   const totalGuessRef = useRef(totalGuess);
   const guessRightRef = useRef(guessRight);
+  const guessesRef = useRef(guesses);
+
+  useEffect(() => {
+    guessesRef.current = guesses;
+  }, [guesses]);
 
   useEffect(() => {
     totalGuessRef.current = totalGuess;
@@ -129,7 +138,7 @@ function Home() {
   }, [isUsernameSubmitted, refresh]);
 
   const handleClick = (num: number, index: number) => {
-    if (!guesses[index]) {
+    if (!guessesRef.current[index]) {
       dispatch(incrementGuess());
       const isMax = localMax(num, index, numbers, gameDifficulty);
       if (isMax) {
@@ -140,6 +149,46 @@ function Home() {
         dispatch(setGuessResult({ index, result: 'wrong' }));
       }
     }
+  };
+
+  const handleReplayMemory = (num: number, index: number) => {
+    const now = Date.now();
+
+    if (startTime === null) {
+      setStartTime(now);
+    }
+
+    setClicks(prev => [...prev, { num, index, timestamp: now }]);
+  };
+
+  const handleReplay = () => {
+    if (clicks.length === 0 || startTime === null) return
+    dispatch(setReplayButtonDisabled(true))
+    
+    console.log(clicks)
+
+    let totalDelay = 0;
+
+    for (let i = 0; i < clicks.length; i++) {
+      let delay;
+      if (i === 0) {
+        delay = 0
+        console.log(delay)
+      } else {
+        delay = clicks[i].timestamp - clicks[i - 1].timestamp
+        console.log(delay)
+      }
+
+      totalDelay += delay;
+      setTimeout(() => {
+        console.log(delay)
+        handleClick(clicks[i].num, clicks[i].index)
+      }, totalDelay)
+    }
+    
+    setTimeout(() => {
+      dispatch(setReplayButtonDisabled(false))
+    }, totalDelay + 300)
   };
 
   useEffect(() => {
@@ -164,6 +213,7 @@ function Home() {
   const handleReset = () => {
     dispatch(resetGame());
     setClicked(false);
+    setClicks([])
     refresh();
   };
 
@@ -181,6 +231,7 @@ function Home() {
           guessRight={guessRight}
           handleSubmitScore={handleSubmitScore}
           handleCooldownClick={handleCooldownClick}
+          handleReplay={handleReplay}
         />
       )}
       {isUsernameSubmitted && (
@@ -188,6 +239,7 @@ function Home() {
           numbers={numbers}
           guesses={guesses}
           handleClick={handleClick}
+          handleReplayMemory={handleReplayMemory}
           handleAllLocalMaxClick={handleAllLocalMaxClick}
           handleReset={handleReset}
         />

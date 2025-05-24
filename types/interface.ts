@@ -12,6 +12,7 @@ export interface GameStatsProps {
   guessRight: number;
   handleSubmitScore: (e: React.FormEvent) => void;
   handleCooldownClick: () => void;
+  handleReplay: () => void;
 }
 
 export interface GameGridProps {
@@ -20,6 +21,7 @@ export interface GameGridProps {
     handleClick: (num: number, index: number) => void;
     handleAllLocalMaxClick: () => void;
     handleReset: () => void;
+    handleReplayMemory: (num: number, index: number) => void;
 }
 
 export type GameState = {
@@ -35,6 +37,7 @@ export type GameState = {
   difficulty: string;
   timerButtonDisabled: boolean;
   difficultyButton: string;
+  replayButtonDisabled: boolean;
 };
 
 export interface ScoreBoardProps {
@@ -44,3 +47,9 @@ export interface ScoreBoardProps {
 export type ColumnMeta = {
   className?: string;
 };
+
+export type ClickEvent = {
+  num: number;
+  index: number;
+  timestamp: number;
+}

@@ -1,7 +1,10 @@
 import React from 'react';
 import { GameGridProps } from '../types/interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
-const GameGrid: React.FC<GameGridProps> = ({ numbers, guesses, handleClick, handleAllLocalMaxClick, handleReset }) => {
+const GameGrid: React.FC<GameGridProps> = ({ numbers, handleClick, handleReplayMemory, handleAllLocalMaxClick, handleReset }) => {
+  const guesses = useSelector((state: RootState) => state.game.guesses);
   const getTileColor = (index: number): string => {
     if (guesses[index] === 'right') return 'green';
     if (guesses[index] === 'wrong') return 'red';
@@ -14,7 +17,7 @@ const GameGrid: React.FC<GameGridProps> = ({ numbers, guesses, handleClick, hand
         {numbers.map((num, index) => (
           <div
             key={index}
-            onClick={() => handleClick(num, index)}
+            onClick={() => {handleClick(num, index), handleReplayMemory(num, index)}}
             className={`w-[50px] h-[50px] flex items-center justify-center cursor-pointer border border-gray-300 rounded-lg font-bold`}
             style={{ backgroundColor: getTileColor(index) }}
           >

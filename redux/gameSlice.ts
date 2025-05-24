@@ -14,6 +14,7 @@ const initialState: GameState = {
   difficulty: 'easy',
   timerButtonDisabled: false,
   difficultyButton: 'easy',
+  replayButtonDisabled: false,
 };
 
 const gameSlice = createSlice({
@@ -63,6 +64,9 @@ const gameSlice = createSlice({
     },
     setTimerButtonDisabled(state, action: PayloadAction<boolean>) {
       state.timerButtonDisabled = action.payload;
+    },
+    setReplayButtonDisabled(state, action: PayloadAction<boolean>) {
+      state.replayButtonDisabled = action.payload;
     }
   },
 });
@@ -81,6 +85,7 @@ export const {
   toggleTimerActive,
   setGameDifficulty,
   setTimerButtonDisabled,
+  setReplayButtonDisabled,
 } = gameSlice.actions;
 
 export default gameSlice.reducer;

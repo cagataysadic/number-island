@@ -2,13 +2,15 @@ import React, { useEffect, useRef } from 'react';
 import { GameStatsProps } from '../types/interface';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { setGameDifficulty } from '@/redux/gameSlice';
+import { resetGame, setGameDifficulty } from '@/redux/gameSlice';
 
-const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldownClick }) => {
+const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldownClick, handleReplay }) => {
   const totalGuess = useSelector((state: RootState) => state.game.totalGuess);
   const guessRight = useSelector((state: RootState) => state.game.guessRight);
   const timerButtonDisabled = useSelector((state: RootState) => state.game.timerButtonDisabled);
   const difficultyButton = useSelector((state: RootState) => state.game.difficultyButton);
+  const replayButtonDisabled = useSelector((state: RootState) => state.game.replayButtonDisabled);
+
   const dispatch = useDispatch();
 
   return (
@@ -73,6 +75,18 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
           Hard
         </button>
       </div>
+
+      <button
+        onClick={() => {handleReplay(), dispatch(resetGame());}}
+        disabled={replayButtonDisabled}
+        className={`mt-5 px-4 py-2 rounded transition ${
+          replayButtonDisabled
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600 text-white"
+        }`}
+      >
+        Replay
+      </button>
 
       <div className="mt-6 space-y-2">
         <h2 className="text-lg font-semibold">Total Guess: {totalGuess}</h2>
