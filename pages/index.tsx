@@ -215,7 +215,7 @@ function Home() {
   }, [gameDifficulty])
 
   return (
-    <div className='flex flex-col items-center mt-20 bg-white'>
+    <div className='flex flex-col items-center mt-5 bg-white'>
       <ToastContainer />
       <UsernameModal scores={scores}/>
       {isUsernameSubmitted && (

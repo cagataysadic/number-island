@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Score, ScoreBoardProps } from '../types/interface';
-import { ColumnDef, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { ColumnDef, flexRender, getCoreRowModel, getPaginationRowModel, useReactTable } from '@tanstack/react-table';
 
 
 const ScoreBoard: React.FC<ScoreBoardProps> = ({ scores }) => {
@@ -38,15 +38,25 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ scores }) => {
     },
   ];
 
+  const [pagination, setPagination] = useState({
+    pageIndex: 0,
+    pageSize: 5
+  })
+
   const table = useReactTable({
     data: scores,
     columns,
-    getCoreRowModel: getCoreRowModel()
+    state: {
+      pagination
+    },
+    onPaginationChange: setPagination,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel()
   });
 
   return (
-    <div className="overflow-x-auto mt-8">
-      <h2 className="text-xl font-bold mb-4">Geçmiş Skorlar</h2>
+    <div className="overflow-x-auto mt-5 mb-10">
+      <h2 className="text-xl font-bold mb-5">Geçmiş Skorlar</h2>
       <table className="border border-gray-300 table-auto">
         <thead className="bg-gray-100">
           {table.getHeaderGroups().map(headerGroup => (
@@ -71,6 +81,54 @@ const ScoreBoard: React.FC<ScoreBoardProps> = ({ scores }) => {
           ))}
         </tbody>
       </table>
+      <div className="mt-5 flex items-center gap-2">
+        <button
+          onClick={() => table.setPageIndex(0)}
+          disabled={!table.getCanPreviousPage()}
+          className="px-2 py-1 border rounded"
+        >
+          {'<<'}
+        </button>
+        <button
+          onClick={() => table.previousPage()}
+          disabled={!table.getCanPreviousPage()}
+          className="px-2 py-1 border rounded"
+        >
+          {'<'}
+        </button>
+        <span>
+          Page{' '}
+          <strong>
+            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
+          </strong>
+        </span>
+        <button
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          className="px-2 py-1 border rounded"
+        >
+          {'>'}
+        </button>
+        <button
+          onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+          disabled={!table.getCanNextPage()}
+          className="px-2 py-1 border rounded"
+        >
+          {'>>'}
+        </button>
+
+        <select
+          value={table.getState().pagination.pageSize}
+          onChange={(e) => table.setPageSize(Number(e.target.value))}
+          className="ml-4 border rounded px-2 py-1"
+        >
+          {[5, 10, 20].map((size) => (
+            <option key={size} value={size}>
+              Show {size}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 };
