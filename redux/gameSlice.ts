@@ -11,9 +11,9 @@ const initialState: GameState = {
   isUsernameSubmitted: false,
   guesses: {},
   rightGuesses: [],
-  difficulty: 'easy',
+  difficulty: "Easy",
   timerButtonDisabled: false,
-  difficultyButton: 'easy',
+  difficultyButton: "Easy",
   replayButtonDisabled: false,
 };
 

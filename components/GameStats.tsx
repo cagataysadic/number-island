@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { GameStatsProps } from '../types/interface';
+import React from 'react';
+import { GameStatsProps, Difficulty } from '../types/interface';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 import { resetGame, setGameDifficulty } from '@/redux/gameSlice';
@@ -10,6 +10,8 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
   const timerButtonDisabled = useSelector((state: RootState) => state.game.timerButtonDisabled);
   const difficultyButton = useSelector((state: RootState) => state.game.difficultyButton);
   const replayButtonDisabled = useSelector((state: RootState) => state.game.replayButtonDisabled);
+
+  
 
   const dispatch = useDispatch();
 
@@ -42,10 +44,10 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
 
       <div className="mt-6 space-x-2">
         <button
-          onClick={() => dispatch(setGameDifficulty('easy'))}
-          disabled={difficultyButton === 'easy'}
+          onClick={() => dispatch(setGameDifficulty(Difficulty.Easy))}
+          disabled={difficultyButton === Difficulty.Easy}
           className={`px-4 py-2 rounded transition ${
-            difficultyButton === 'easy'
+            difficultyButton === Difficulty.Easy
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
@@ -53,10 +55,10 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
           Easy
         </button>
         <button
-          onClick={() => dispatch(setGameDifficulty('normal'))}
-          disabled={difficultyButton === 'normal'}
+          onClick={() => dispatch(setGameDifficulty(Difficulty.Normal))}
+          disabled={difficultyButton === Difficulty.Normal}
           className={`px-4 py-2 rounded transition ${
-            difficultyButton === 'normal'
+            difficultyButton === Difficulty.Normal
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}
@@ -64,10 +66,10 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
           Normal
         </button>
         <button
-          onClick={() => dispatch(setGameDifficulty('hard'))}
-          disabled={difficultyButton === 'hard'}
+          onClick={() => dispatch(setGameDifficulty(Difficulty.Hard))}
+          disabled={difficultyButton === Difficulty.Hard}
           className={`px-4 py-2 rounded transition ${
-            difficultyButton === 'hard'
+            difficultyButton === Difficulty.Hard
               ? "bg-gray-400 cursor-not-allowed"
               : "bg-blue-500 hover:bg-blue-600 text-white"
           }`}

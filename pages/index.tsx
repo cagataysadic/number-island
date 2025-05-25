@@ -9,7 +9,7 @@ import { fetchScores, postScore } from '../services/api';
 import { ClickEvent, Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGameDifficulty, setGuessResult, setReplayButtonDisabled, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setReplayButtonDisabled, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -23,7 +23,6 @@ function Home() {
   const timer = useSelector((state: RootState) => state.game.timer);
   const isTimerActive = useSelector((state: RootState) => state.game.isTimerActive);
   const gameDifficulty = useSelector((state: RootState) => state.game.difficulty);
-  const replayButtonDisabled = useSelector((state: RootState) => state.game.replayButtonDisabled)
   const dispatch = useDispatch();
 
   const [numbers, setNumbers] = useState<number[]>([]);
@@ -80,7 +79,6 @@ function Home() {
     dispatch(toggleTimerActive(false));
     dispatch(setUsername(''));
     dispatch(submitUsername(false));
-    dispatch(setGameDifficulty('easy'));
     setClicked(false);
     refresh();
     fetchAndSetScores();
@@ -164,8 +162,6 @@ function Home() {
   const handleReplay = () => {
     if (clicks.length === 0 || startTime === null) return
     dispatch(setReplayButtonDisabled(true))
-    
-    console.log(clicks)
 
     let totalDelay = 0;
 

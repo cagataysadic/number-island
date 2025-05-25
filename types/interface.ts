@@ -53,3 +53,9 @@ export type ClickEvent = {
   index: number;
   timestamp: number;
 }
+
+export enum Difficulty {
+  Easy = "Easy",
+  Normal = "Normal",
+  Hard = "Hard",
+}
