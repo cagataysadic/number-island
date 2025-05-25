@@ -16,7 +16,7 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
   const dispatch = useDispatch();
 
   return (
-    <div className="text-center p-6">
+    <div className="text-center p-6 flex flex-col items-center">
       <h1 className="text-2xl font-bold mb-6">Random Number Grid</h1>
 
       <div className="mb-5">
@@ -30,19 +30,33 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
         </form>
       </div>
 
-      <button
-        onClick={handleCooldownClick}
-        disabled={timerButtonDisabled}
-        className={`px-4 py-2 rounded transition ${
-          timerButtonDisabled
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600 text-white"
-        }`}
-      >
-        Timer
-      </button>
+      <div className='mb-5 space-x-2'>
+        <button
+          onClick={handleCooldownClick}
+          disabled={timerButtonDisabled}
+          className={`px-4 py-2 rounded transition ${
+            timerButtonDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
+        >
+          Timer
+        </button>
 
-      <div className="mt-6 space-x-2">
+        <button
+          onClick={() => {handleReplay(), dispatch(resetGame());}}
+          disabled={replayButtonDisabled}
+          className={`px-4 py-2 rounded transition ${
+            replayButtonDisabled
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          }`}
+        >
+          Replay
+        </button>
+      </div>
+
+      <div className="space-x-2">
         <button
           onClick={() => dispatch(setGameDifficulty(Difficulty.Easy))}
           disabled={difficultyButton === Difficulty.Easy}
@@ -78,19 +92,7 @@ const GameStats: React.FC<GameStatsProps> = ({ handleSubmitScore, handleCooldown
         </button>
       </div>
 
-      <button
-        onClick={() => {handleReplay(), dispatch(resetGame());}}
-        disabled={replayButtonDisabled}
-        className={`mt-5 px-4 py-2 rounded transition ${
-          replayButtonDisabled
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600 text-white"
-        }`}
-      >
-        Replay
-      </button>
-
-      <div className="mt-6 space-y-2">
+      <div className="mt-5 space-y-2">
         <h2 className="text-lg font-semibold">Total Guess: {totalGuess}</h2>
         <h2 className="text-lg font-semibold">
           Accuracy: %{guessRight > 0 ? ((guessRight / totalGuess) * 100).toFixed(2) : 0}
