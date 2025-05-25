@@ -6,10 +6,10 @@ import GameGrid from '../components/GameGrid';
 import ScoreBoard from '../components/ScoreBoard';
 import useLocalMax from '../hooks/useLocalMax';
 import { fetchScores, postScore } from '../services/api';
-import { ClickEvent, Score } from '../types/interface';
+import { ClickEvent, Difficulty, Score } from '../types/interface';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
-import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGuessResult, setReplayButtonDisabled, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
+import { incrementCorrect, incrementGuess, resetGame, setCooldown, setGameDifficulty, setGuessResult, setReplayButtonDisabled, setRightGuesses, setRightGuessesReset, setTimer, setTimerButtonDisabled, setUsername, submitUsername, toggleTimerActive } from '../redux/gameSlice';
 
 
 function Home() {
@@ -79,6 +79,7 @@ function Home() {
     dispatch(toggleTimerActive(false));
     dispatch(setUsername(''));
     dispatch(submitUsername(false));
+    dispatch(setGameDifficulty(Difficulty.Easy))
     setClicked(false);
     refresh();
     fetchAndSetScores();
