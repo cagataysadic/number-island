@@ -117,7 +117,7 @@ function Home() {
     const tempLocalMax: number[] = [];
     const tempMaxNum: number[] = [];
     for (let i = 0; i < 36; i++) {
-      if (localMax(tempNumbers[i], i, tempNumbers, gameDifficulty)) {
+      if (localMax(tempNumbers[i], i, tempNumbers)) {
         tempLocalMax.push(i);
         tempMaxNum.push(tempNumbers[i])
       }
@@ -139,7 +139,7 @@ function Home() {
   const handleClick = (num: number, index: number) => {
     if (!guessesRef.current[index]) {
       dispatch(incrementGuess());
-      const isMax = localMax(num, index, numbers, gameDifficulty);
+      const isMax = localMax(num, index, numbers);
       if (isMax) {
         dispatch(setGuessResult({ index, result: 'right' }));
         dispatch(setRightGuesses({ num }));

@@ -1,18 +1,27 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Difficulty } from '@/types/interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 function useLocalMax() {
   const rowSize = 6;
+  const gameDifficulty = useSelector((state: RootState) => state.game.difficulty);
 
-  const localMax = useCallback((num: number, index: number, nums: number[], gameDifficulty: string) => {
-    if (gameDifficulty === Difficulty.Easy) {
+  const gameDifficultyRef = useRef(gameDifficulty);
+  
+  useEffect(() => {
+    gameDifficultyRef.current = gameDifficulty;
+  }, [gameDifficulty]);
+
+  const localMax = useCallback((num: number, index: number, nums: number[]) => {
+    if (gameDifficultyRef.current === Difficulty.Easy) {
       const west = index % rowSize !== 0 ? nums[index - 1] : -1;
       const east = (index + 1) % rowSize !== 0 ? nums[index + 1] : -1;
 
       const neighbors = [west, east].filter(n => n !== -1);
 
       return neighbors.every(n => num > n);
-    } else if (gameDifficulty === Difficulty.Normal) {
+    } else if (gameDifficultyRef.current === Difficulty.Normal) {
       const north = index - rowSize >= 0 ? nums[index - rowSize] : -1;
       const south = index + rowSize < 36 ? nums[index + rowSize] : -1;
       const west = index % rowSize !== 0 ? nums[index - 1] : -1;
@@ -21,7 +30,7 @@ function useLocalMax() {
       const neighbors = [north, south, west, east].filter(n => n !== -1);
 
       return neighbors.every(n => num > n);
-    } else if (gameDifficulty === Difficulty.Hard) {
+    } else if (gameDifficultyRef.current === Difficulty.Hard) {
       const northwest = index - rowSize + 1 >= 0 ? nums[index - rowSize + 1] : -1;
       const north = index - rowSize >= 0 ? nums[index - rowSize] : -1;
       const northeast = index - rowSize - 1 >= 0 ? nums[index - rowSize - 1] : -1;
