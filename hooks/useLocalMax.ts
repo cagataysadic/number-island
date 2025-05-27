@@ -31,12 +31,12 @@ function useLocalMax() {
 
       return neighbors.every(n => num > n);
     } else if (gameDifficultyRef.current === Difficulty.Hard) {
-      const northwest = index - rowSize + 1 >= 0 ? nums[index - rowSize + 1] : -1;
+      const northwest = index - rowSize >= 0 && index % rowSize !== 0 ? nums[index - rowSize - 1] : -1;
       const north = index - rowSize >= 0 ? nums[index - rowSize] : -1;
-      const northeast = index - rowSize - 1 >= 0 ? nums[index - rowSize - 1] : -1;
-      const southwest = index + rowSize - 1 < 36 ? nums[index + rowSize - 1] : -1;
+      const northeast = index - rowSize >= 0 && (index + 1) % rowSize !== 0 ? nums[index - rowSize + 1] : -1;
+      const southwest = index + rowSize < 36 && index % rowSize !== 0 ? nums[index + rowSize - 1] : -1;
       const south = index + rowSize < 36 ? nums[index + rowSize] : -1;
-      const southeast = index + rowSize + 1 < 36 ? nums[index + rowSize + 1] : -1;
+      const southeast = index + rowSize < 36 && (index + 1) % rowSize !== 0 ? nums[index + rowSize + 1] : -1;
       const west = index % rowSize !== 0 ? nums[index - 1] : -1;
       const east = (index + 1) % rowSize !== 0 ? nums[index + 1] : -1;
 

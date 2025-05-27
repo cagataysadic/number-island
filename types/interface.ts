@@ -18,10 +18,10 @@ export interface GameStatsProps {
 export interface GameGridProps {
     numbers: number[];
     guesses: { [key: number]: 'right' | 'wrong'};
-    handleClick: (num: number, index: number) => void;
+    handleClick: (index: number) => void;
     handleAllLocalMaxClick: () => void;
     handleReset: () => void;
-    handleReplayMemory: (num: number, index: number) => void;
+    handleReplayMemory: (index: number) => void;
 }
 
 export type GameState = {
@@ -49,7 +49,6 @@ export type ColumnMeta = {
 };
 
 export type ClickEvent = {
-  num: number;
   index: number;
   timestamp: number;
 }

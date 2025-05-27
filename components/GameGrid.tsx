@@ -17,7 +17,7 @@ const GameGrid: React.FC<GameGridProps> = ({ numbers, handleClick, handleReplayM
         {numbers.map((num, index) => (
           <div
             key={index}
-            onClick={() => {handleClick(num, index), handleReplayMemory(num, index)}}
+            onClick={() => {handleClick(index), handleReplayMemory(index)}}
             className={`w-[50px] h-[50px] flex items-center justify-center cursor-pointer border border-gray-300 rounded-lg font-bold`}
             style={{ backgroundColor: getTileColor(index) }}
           >

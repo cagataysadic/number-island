@@ -27,17 +27,19 @@ function Home() {
 
   const [numbers, setNumbers] = useState<number[]>([]);
   const [allLocalMax, setAllLocalMax] = useState<number[]>([]);
-  const [allMaxNum, setAllMaxNum] = useState<number[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const [scores, setScores] = useState<Score[]>([]);
   const [clicks, setClicks] = useState<ClickEvent[]>([])
   const [startTime, setStartTime] = useState<number | null>(null);
+  const [aiRightCalls, setAiRightCalls] = useState<number[]>([]);
+  const [localMaxReached, setLocalMaxReached] = useState<boolean>(false);
 
   const { localMax } = useLocalMax();
 
   const totalGuessRef = useRef(totalGuess);
   const guessRightRef = useRef(guessRight);
   const guessesRef = useRef(guesses);
+  const localMaxReachedRef = useRef(localMaxReached);
 
   useEffect(() => {
     guessesRef.current = guesses;
@@ -50,6 +52,10 @@ function Home() {
   useEffect(() => {
     guessRightRef.current = guessRight;
   }, [guessRight]);
+
+  useEffect(() => {
+    localMaxReachedRef.current = localMaxReached;
+  }, [localMaxReached]);
 
   const fetchAndSetScores = useCallback(async () => {
     try {
@@ -115,15 +121,13 @@ function Home() {
     }
     setNumbers(tempNumbers);
     const tempLocalMax: number[] = [];
-    const tempMaxNum: number[] = [];
     for (let i = 0; i < 36; i++) {
       if (localMax(tempNumbers[i], i, tempNumbers)) {
         tempLocalMax.push(i);
-        tempMaxNum.push(tempNumbers[i])
       }
     }
     setAllLocalMax(tempLocalMax);
-    setAllMaxNum(tempMaxNum);
+    setAiRightCalls(tempLocalMax);
   }, [localMax]);
 
   useEffect(() => {
@@ -136,33 +140,11 @@ function Home() {
     }
   }, [isUsernameSubmitted, refresh]);
 
-  const handleClick = (num: number, index: number) => {
-    if (!guessesRef.current[index]) {
-      dispatch(incrementGuess());
-      const isMax = localMax(num, index, numbers);
-      if (isMax) {
-        dispatch(setGuessResult({ index, result: 'right' }));
-        dispatch(setRightGuesses({ num }));
-        dispatch(incrementCorrect());
-      } else {
-        dispatch(setGuessResult({ index, result: 'wrong' }));
-      }
-    }
-  };
-
-  const handleReplayMemory = (num: number, index: number) => {
-    const now = Date.now();
-
-    if (startTime === null) {
-      setStartTime(now);
-    }
-
-    setClicks(prev => [...prev, { num, index, timestamp: now }]);
-  };
-
   const handleReplay = () => {
     if (clicks.length === 0 || startTime === null) return
-    dispatch(setReplayButtonDisabled(true))
+    dispatch(setReplayButtonDisabled(true));
+    dispatch(setRightGuessesReset());
+    setLocalMaxReached(false);
 
     let totalDelay = 0;
 
@@ -176,7 +158,7 @@ function Home() {
 
       totalDelay += delay;
       setTimeout(() => {
-        handleClick(clicks[i].num, clicks[i].index)
+        handleClick(clicks[i].index)
       }, totalDelay)
     }
     
@@ -186,7 +168,8 @@ function Home() {
   };
 
   useEffect(() => {
-    if (rightGuesses.length > 0 && allMaxNum.length > 0 && rightGuesses.length === allMaxNum.length) {
+    if (rightGuesses.length > 0 && allLocalMax.length > 0 && rightGuesses.length === allLocalMax.length) {
+      setLocalMaxReached(true);
       toast.success("Well done. You have found every local max number");
     }
   }, [guessRight])
@@ -202,6 +185,31 @@ function Home() {
       dispatch(resetGame());
       setClicked(false);
     }
+  };
+
+  const handleClick = (index: number) => {
+
+    if (!guessesRef.current[index] && !localMaxReachedRef.current) {
+      dispatch(incrementGuess());
+      const isMax = allLocalMax.includes(index)
+      if (isMax) {
+        dispatch(setGuessResult({ index, result: 'right' }));
+        dispatch(setRightGuesses({ index }));
+        dispatch(incrementCorrect());
+      } else {
+        dispatch(setGuessResult({ index, result: 'wrong' }));
+      }
+    }
+  };
+
+  const handleReplayMemory = (index: number) => {
+    const now = Date.now();
+
+    if (startTime === null) {
+      setStartTime(now);
+    }
+
+    setClicks(prev => [...prev, { index, timestamp: now }]);
   };
 
   const handleReset = () => {
