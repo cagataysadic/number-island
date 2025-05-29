@@ -31,7 +31,6 @@ function Home() {
   const [scores, setScores] = useState<Score[]>([]);
   const [clicks, setClicks] = useState<ClickEvent[]>([])
   const [startTime, setStartTime] = useState<number | null>(null);
-  const [aiRightCalls, setAiRightCalls] = useState<number[]>([]);
   const [localMaxReached, setLocalMaxReached] = useState<boolean>(false);
 
   const { localMax } = useLocalMax();
@@ -127,7 +126,6 @@ function Home() {
       }
     }
     setAllLocalMax(tempLocalMax);
-    setAiRightCalls(tempLocalMax);
   }, [localMax]);
 
   useEffect(() => {
